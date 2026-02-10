@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id                 String   @id @default(cuid())
+  phone              String   @unique
+  password           String   @default("password123")
+  name               String?
+  shopName           String?
+  location           String?
+  role               String   @default("RETAILER") // RETAILER, ADMIN, DELIVERY
+  creditLimit        Float    @default(0)
+  outstandingBalance Float    @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  orders             Order[]
+}
+
+model Product {
+  id               String      @id @default(cuid())
+  name             String
+  sku              String      @unique
+  brand            String
+  categoryId       String
+  category         Category    @relation(fields: [categoryId], references: [id])
+  image            String?
+  description      String?
+  basePrice        Float
+  minOrderQuantity Int         @default(1)
+  unit             String      @default("piece") // piece, pack, carton
+  priceSlabs       PriceSlab[]
+  inventory        Inventory[]
+  orderItems       OrderItem[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  image       String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model PriceSlab {
+  id          String  @id @default(cuid())
+  productId   String
+  product     Product @relation(fields: [productId], references: [id])
+  minQuantity Int
+  price       Float
+}
+
+model Inventory {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  warehouseId String   @default("main")
+  quantity   Int
+  expiryDate DateTime?
+  updatedAt  DateTime @updatedAt
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  status        String      @default("PENDING") // PENDING, CONFIRMED, PACKED, SHIPPED, DELIVERED, CANCELLED
+  totalAmount   Float
+  paymentMethod String      @default("COD") // COD, Credit, Online
+  paymentStatus String      @default("PENDING")
+  items         OrderItem[]
+  issues        Issue[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model OrderItem {
+  id           String  @id @default(cuid())
+  orderId      String
+  order        Order   @relation(fields: [orderId], references: [id])
+  productId    String
+  product      Product @relation(fields: [productId], references: [id])
+  quantity     Int
+  priceAtOrder Float
+}
+
+model Issue {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  productId String
+  reason    String
+  status    String   @default("OPEN") // OPEN, RESOLVED, REJECTED
+  createdAt DateTime @default(now())
+}
