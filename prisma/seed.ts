@@ -1,139 +1,227 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaLibSql } from '@prisma/adapter-libsql'
-import { createClient } from '@libsql/client'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { Pool } from 'pg'
 import 'dotenv/config'
 
-const libsql = createClient({
-  url: 'file:dev.db',
-})
+const connectionString = `${process.env.DATABASE_URL}`
+const pool = new Pool({ connectionString })
+const adapter = new PrismaPg(pool)
+const prisma = new PrismaClient({ adapter })
 
 async function main() {
+  console.log('Start seeding ...')
+
   // Clear existing data (in reverse dependency order)
-  await libsql.execute('DELETE FROM "Issue"');
-  await libsql.execute('DELETE FROM "OrderItem"');
-  await libsql.execute('DELETE FROM "Order"');
-  await libsql.execute('DELETE FROM "Inventory"');
-  await libsql.execute('DELETE FROM "PriceSlab"');
-  await libsql.execute('DELETE FROM "Product"');
-  await libsql.execute('DELETE FROM "User"');
+  // deleteMany without args deletes all
+  await prisma.issue.deleteMany()
+  await prisma.orderItem.deleteMany()
+  await prisma.order.deleteMany()
+  await prisma.inventory.deleteMany()
+  await prisma.priceSlab.deleteMany()
+  await prisma.product.deleteMany()
+  await prisma.user.deleteMany()
+  await prisma.category.deleteMany()
 
-  // Create Demo Admin
-  await libsql.execute({
-    sql: `INSERT OR REPLACE INTO User (id, phone, password, name, role, shopName, location, createdAt, updatedAt) 
-          VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
-    args: ['u-demo-admin', '1234567890', 'password123', 'Demo Admin', 'ADMIN', 'Green Wholesale Hub', 'Bangalore, KA']
-  });
+  // Create Categories
+  const categories = [
+    { name: 'Edible Oil', description: 'Cooking oils, ghee, and vanaspati', status: 'Active' },
+    { name: 'Flour', description: 'Wheat flour, gram flour, and others', status: 'Active' },
+    { name: 'Instant Food', description: 'Noodles, pasta, and ready-to-eat', status: 'Active' },
+    { name: 'Detergent', description: 'Washing powders and liquids', status: 'Hidden' },
+    { name: 'Personal Care', description: 'Soaps, shampoos, and oral care', status: 'Active' },
+  ]
 
-  // Create Original Admin
-  await libsql.execute({
-    sql: `INSERT OR REPLACE INTO User (id, phone, password, name, role, shopName, location, createdAt, updatedAt) 
-          VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
-    args: ['u-admin', '9999999999', 'password123', 'Main Distributor', 'ADMIN', 'Green Wholesale Hub', 'Bangalore, KA']
-  });
+  const categoryMap = new Map()
 
-  // Create Demo Retailer
-  await libsql.execute({
-    sql: `INSERT OR REPLACE INTO User (id, phone, password, name, role, shopName, location, creditLimit, outstandingBalance, createdAt, updatedAt) 
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
-    args: ['u-demo-retailer', '0987654321', 'password123', 'Demo Retailer', 'RETAILER', 'Demo Kirana Store', 'Indiranagar, Bangalore', 25000, 0]
-  });
+  for (const cat of categories) {
+    const created = await prisma.category.create({
+      data: {
+        name: cat.name,
+        description: cat.description,
+        status: cat.status,
+      }
+    })
+    categoryMap.set(cat.name, created.id)
+  }
 
-  // Create Original Retailer
-  await libsql.execute({
-    sql: `INSERT OR REPLACE INTO User (id, phone, password, name, role, shopName, location, creditLimit, outstandingBalance, createdAt, updatedAt) 
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
-    args: ['u-retailer', '8888888888', 'password123', 'Ramesh Kumar', 'RETAILER', 'Ramesh Kirana Store', 'HSR Layout, Bangalore', 50000, 0]
-  });
+  // Create Users
+  const users = [
+    {
+      id: 'u-demo-admin',
+      phone: '1234567890',
+      password: 'password123',
+      name: 'Demo Admin',
+      role: 'ADMIN',
+      shopName: 'Green Wholesale Hub',
+      location: 'Bangalore, KA'
+    },
+    {
+      id: 'u-admin',
+      phone: '9999999999',
+      password: 'password123',
+      name: 'Main Distributor',
+      role: 'ADMIN',
+      shopName: 'Green Wholesale Hub',
+      location: 'Bangalore, KA'
+    },
+    {
+      id: 'u-demo-retailer',
+      phone: '0987654321',
+      password: 'password123',
+      name: 'Demo Retailer',
+      role: 'RETAILER',
+      shopName: 'Demo Kirana Store',
+      location: 'Indiranagar, Bangalore',
+      creditLimit: 25000,
+      outstandingBalance: 0
+    },
+    {
+      id: 'u-retailer',
+      phone: '8888888888',
+      password: 'password123',
+      name: 'Ramesh Kumar',
+      role: 'RETAILER',
+      shopName: 'Ramesh Kirana Store',
+      location: 'HSR Layout, Bangalore',
+      creditLimit: 50000,
+      outstandingBalance: 0
+    }
+  ]
+
+  for (const u of users) {
+    await prisma.user.upsert({
+      where: { id: u.id },
+      update: {},
+      create: {
+        id: u.id,
+        phone: u.phone,
+        password: u.password,
+        name: u.name,
+        role: u.role,
+        shopName: u.shopName,
+        location: u.location,
+        creditLimit: u.creditLimit,
+        outstandingBalance: u.outstandingBalance
+      }
+    })
+  }
 
   // Create Products
   const products = [
     {
-      id: 'p1',
       name: 'Fortune Sunlite Refined Sunflower Oil',
       sku: 'OIL-FOR-1L',
       brand: 'Fortune',
       category: 'Edible Oil',
-      basePrice: 145,
+      wholesalePrice: 145,
+      mrp: 160,
       minOrderQuantity: 12,
       unit: 'carton',
       description: '1 Litre Pouch',
+      sellingUnit: '1 Litre Pouch',
+      image: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=200&h=200&fit=crop',
+      unitsPerPack: 10,
+      gstPercentage: 5,
+      hsnCode: '15121110'
     },
     {
-      id: 'p2',
       name: 'Aashirvaad Whole Wheat Atta',
       sku: 'ATTA-AASH-10K',
       brand: 'Aashirvaad',
       category: 'Flour',
-      basePrice: 420,
+      wholesalePrice: 420,
+      mrp: 450,
       minOrderQuantity: 5,
       unit: 'bag',
       description: '10kg Bag',
+      sellingUnit: '10kg Bag',
+      image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&h=200&fit=crop',
+      unitsPerPack: 1,
+      gstPercentage: 0,
+      hsnCode: '11010000'
     },
     {
-      id: 'p3',
       name: 'Maggi 2-Minute Noodles',
       sku: 'MAGGI-70G-P72',
       brand: 'Nestle',
       category: 'Instant Food',
-      basePrice: 840,
+      wholesalePrice: 840,
+      mrp: 960,
       minOrderQuantity: 1,
       unit: 'carton',
       description: '70g x 72 packs',
+      sellingUnit: '70g Pack',
+      image: 'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=200&h=200&fit=crop',
+      unitsPerPack: 72,
+      gstPercentage: 12,
+      hsnCode: '19023010'
     },
     {
-      id: 'p4',
       name: 'Surf Excel Quick Wash',
       sku: 'SURF-EX-1K',
       brand: 'HUL',
       category: 'Detergent',
-      basePrice: 190,
+      wholesalePrice: 190,
+      mrp: 210,
       minOrderQuantity: 10,
       unit: 'pack',
       description: '1kg Pack',
-    },
+      sellingUnit: '1kg Pack',
+      image: 'https://images.unsplash.com/photo-1545184180-25d471fe75eb?w=200&h=200&fit=crop',
+      unitsPerPack: 10,
+      gstPercentage: 18,
+      hsnCode: '34029011'
+    }
   ]
 
   for (const p of products) {
-    await libsql.execute({
-      sql: `INSERT OR REPLACE INTO Product (id, name, sku, brand, category, basePrice, minOrderQuantity, unit, description, createdAt, updatedAt) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
-      args: [p.id, p.name, p.sku, p.brand, p.category, p.basePrice, p.minOrderQuantity, p.unit, p.description]
-    });
+    const catId = categoryMap.get(p.category)
+    if (!catId) continue
 
-    // Add inventory
-    await libsql.execute({
-      sql: `INSERT OR REPLACE INTO Inventory (id, productId, quantity, warehouseId, updatedAt) 
-            VALUES (?, ?, ?, ?, datetime('now'))`,
-      args: [`inv-${p.id}`, p.id, 500, 'main-wh']
-    });
-
-    // Add price slabs (approximate conversion of previous logic)
-    await libsql.execute({
-      sql: `DELETE FROM PriceSlab WHERE productId = ?`,
-      args: [p.id]
-    });
-    await libsql.execute({
-      sql: `INSERT INTO PriceSlab (id, productId, minQuantity, price) VALUES (?, ?, ?, ?)`,
-      args: [`slab1-${p.id}`, p.id, p.minOrderQuantity, p.basePrice]
-    });
-    await libsql.execute({
-      sql: `INSERT INTO PriceSlab (id, productId, minQuantity, price) VALUES (?, ?, ?, ?)`,
-      args: [`slab2-${p.id}`, p.id, p.minOrderQuantity * 5, p.basePrice * 0.95]
-    });
-    await libsql.execute({
-      sql: `INSERT INTO PriceSlab (id, productId, minQuantity, price) VALUES (?, ?, ?, ?)`,
-      args: [`slab3-${p.id}`, p.id, p.minOrderQuantity * 10, p.basePrice * 0.90]
-    });
+    await prisma.product.upsert({
+      where: { sku: p.sku },
+      update: {},
+      create: {
+        name: p.name,
+        sku: p.sku,
+        brand: p.brand,
+        categoryId: catId,
+        wholesalePrice: p.wholesalePrice,
+        mrp: p.mrp,
+        minOrderQuantity: p.minOrderQuantity,
+        unit: p.unit,
+        description: p.description,
+        sellingUnit: p.sellingUnit,
+        image: p.image,
+        unitsPerPack: p.unitsPerPack,
+        gstPercentage: p.gstPercentage,
+        hsnCode: p.hsnCode,
+        inventory: {
+          create: {
+            warehouseId: 'WH-001',
+            quantity: 500
+          }
+        },
+        priceSlabs: {
+          create: [
+            { minQuantity: p.minOrderQuantity, price: p.wholesalePrice },
+            { minQuantity: p.minOrderQuantity * 5, price: p.wholesalePrice * 0.95 },
+            { minQuantity: p.minOrderQuantity * 10, price: p.wholesalePrice * 0.90 }
+          ]
+        }
+      }
+    })
   }
 
-  console.log('Seed data created successfully using direct SQL')
+  console.log('Seeding finished.')
 }
 
 main()
-  .catch((e) => {
-    console.error(e)
-    process.exit(1)
+  .then(async () => {
+    await prisma.$disconnect()
   })
-  .finally(async () => {
-    // libSql client doesn't need explicit disconnect in this script
+  .catch(async (e) => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
   })

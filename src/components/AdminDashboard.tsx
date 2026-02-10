@@ -14,7 +14,7 @@ import { LayoutDashboard, Package, LogOut, Plus, ArrowUpRight, ArrowDownLeft } f
 import { ModeToggle } from './ModeToggle';
 
 import { AdminSidebar, AdminView } from './AdminSidebar';
-import { SummaryView } from './admin-views/SummaryView';
+import SummaryView from './admin-views/SummaryView';
 import { InventoryView } from './admin-views/InventoryView';
 import { CategoriesView } from './admin-views/CategoriesView';
 import { OrdersView } from './admin-views/OrdersView';
@@ -44,9 +44,6 @@ export default function AdminDashboard({ user }: { user: User }) {
                 <InventoryView
                     products={products}
                     updateStock={updateStock}
-                    addProduct={addProduct}
-                    updateProduct={updateProduct}
-                    categories={categories}
                 />
             );
             case 'categories': return (
@@ -86,7 +83,7 @@ export default function AdminDashboard({ user }: { user: User }) {
             </header>
 
             <div className="mx-auto flex max-w-[1400px]">
-                <AdminSidebar currentView={currentView} onViewChange={setCurrentView} />
+                <AdminSidebar />
                 <main className="flex-1 p-6 md:p-8 animate-in fade-in duration-500">
                     {renderView()}
                 </main>

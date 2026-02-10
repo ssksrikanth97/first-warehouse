@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model User {
@@ -33,9 +33,17 @@ model Product {
   category         Category    @relation(fields: [categoryId], references: [id])
   image            String?
   description      String?
-  basePrice        Float
-  minOrderQuantity Int         @default(1)
+  wholesalePrice   Float       // Renamed from basePrice
+  mrp              Float       // New field
+  sellingUnit      String      // New field (e.g., "10kg Bag")
+  unitsPerPack     Int         @default(1) // New field
   unit             String      @default("piece") // piece, pack, carton
+  minOrderQuantity Int         @default(1)
+  warehouseId      String      @default("WH-001") // New field
+  gstPercentage    Float       @default(0) // New field
+  hsnCode          String?     // New field
+  isActive         Boolean     @default(true) // New field
+  
   priceSlabs       PriceSlab[]
   inventory        Inventory[]
   orderItems       OrderItem[]
@@ -48,6 +56,7 @@ model Category {
   name        String    @unique
   description String?
   image       String?
+  status      String    @default("Active") // Active, Hidden
   products    Product[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

@@ -32,8 +32,8 @@ export default function EditProductPage() {
         }
     }, [products, id, router]);
 
-    const handleUpdate = (updatedProduct: Product) => {
-        updateProduct(updatedProduct);
+    const handleUpdate = async (updatedProduct: Product) => {
+        await updateProduct(updatedProduct);
         router.push('/admin/inventory');
     };
 

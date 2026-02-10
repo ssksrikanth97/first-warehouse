@@ -9,8 +9,8 @@ export default function NewProductPage() {
     const { addProduct, categories } = useAdmin();
     const router = useRouter();
 
-    const handleCreate = (product: Product) => {
-        addProduct(product);
+    const handleCreate = async (product: Product) => {
+        await addProduct(product);
         router.push('/admin/inventory');
     };
 
