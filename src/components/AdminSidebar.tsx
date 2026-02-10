@@ -37,19 +37,21 @@ export function AdminSidebar() {
                     const isActive = pathname === item.href
 
                     return (
-                        <Link key={item.id} href={item.href} passHref legacyBehavior>
-                            <Button
-                                variant={isActive ? "secondary" : "ghost"}
-                                className={cn(
-                                    "w-full justify-start gap-3 px-3",
-                                    isActive ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400" : "text-slate-600 dark:text-slate-400"
-                                )}
-                            >
+                        <Button
+                            key={item.id}
+                            variant={isActive ? "secondary" : "ghost"}
+                            className={cn(
+                                "w-full justify-start gap-3 px-3",
+                                isActive ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400" : "text-slate-600 dark:text-slate-400"
+                            )}
+                            asChild
+                        >
+                            <Link href={item.href}>
                                 <Icon className="h-4 w-4" />
                                 <span className="flex-1 text-sm font-medium">{item.label}</span>
                                 {isActive && <ChevronRight className="h-3 w-3" />}
-                            </Button>
-                        </Link>
+                            </Link>
+                        </Button>
                     )
                 })}
             </div>

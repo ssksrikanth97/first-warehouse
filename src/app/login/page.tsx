@@ -134,9 +134,6 @@ export default function LoginPage() {
           </CardFooter>
         </Card>
 
-        <p className="mt-8 text-center text-sm text-slate-500">
-          First time here? <span className="text-blue-500 hover:underline cursor-pointer transition-all">Contact Distributor</span>
-        </p>
       </div>
     </div>
   );
