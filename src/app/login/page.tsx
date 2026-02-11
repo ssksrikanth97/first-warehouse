@@ -23,11 +23,12 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const success = await login(phone, password);
-      if (success) {
+      const result = await login(phone, password);
+      // login now returns { success: boolean, error?: string }
+      if (result.success) {
         router.push('/');
       } else {
-        setError('Invalid credentials. Admin: 1234567890 / password123');
+        setError(result.error || 'Invalid credentials.');
       }
     } catch (err) {
       setError('An error occurred during login.');
@@ -40,14 +41,14 @@ export default function LoginPage() {
     <div className="relative min-h-screen w-full flex items-center justify-center bg-slate-950 overflow-hidden">
       {/* Background patterns */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-500/10 blur-[120px] rounded-full" />
-        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full" />
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-primary/10 blur-[120px] rounded-full" />
+        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-orange-600/10 blur-[120px] rounded-full" />
       </div>
 
       <div className="relative z-10 w-full max-w-md px-4">
         <div className="flex justify-center mb-8">
           <div className="flex items-center gap-2 group cursor-default">
-            <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform duration-300">
+            <div className="p-3 rounded-2xl bg-gradient-to-br from-orange-500 to-primary shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform duration-300">
               <Briefcase className="w-8 h-8 text-white" />
             </div>
             <div className="flex flex-col">
@@ -69,13 +70,13 @@ export default function LoginPage() {
               <div className="space-y-2">
                 <Label htmlFor="phone" className="text-sm font-medium text-slate-200">Mobile Number</Label>
                 <div className="relative group">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-blue-500">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-primary">
                     <Phone className="w-4 h-4" />
                   </div>
                   <Input
                     id="phone"
                     placeholder="Enter 10 digit number"
-                    className="pl-10 bg-slate-950/50 border-slate-800 focus:border-blue-500 focus:ring-blue-500/20 text-slate-200 h-11 transition-all"
+                    className="pl-10 bg-slate-950/50 border-slate-800 focus:border-primary focus:ring-primary/20 text-slate-200 h-11 transition-all"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
                     type="tel"
@@ -88,13 +89,13 @@ export default function LoginPage() {
                   <Label htmlFor="password" className="text-sm font-medium text-slate-200">Password</Label>
                 </div>
                 <div className="relative group">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-blue-500">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-primary">
                     <Lock className="w-4 h-4" />
                   </div>
                   <Input
                     id="password"
                     placeholder="••••••••"
-                    className="pl-10 bg-slate-950/50 border-slate-800 focus:border-blue-500 focus:ring-blue-500/20 text-slate-200 h-11 transition-all"
+                    className="pl-10 bg-slate-950/50 border-slate-800 focus:border-primary focus:ring-primary/20 text-slate-200 h-11 transition-all"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     type="password"
@@ -110,7 +111,7 @@ export default function LoginPage() {
               )}
 
               <Button
-                className="w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold transition-all duration-300 shadow-lg shadow-blue-500/20"
+                className="w-full h-11 bg-gradient-to-r from-orange-500 to-primary hover:from-orange-400 hover:to-primary/90 text-white font-semibold transition-all duration-300 shadow-lg shadow-primary/20"
                 type="submit"
                 disabled={isSubmitLoading}
               >

@@ -19,7 +19,7 @@ export const QuickCart = ({ onCheckout }: { onCheckout: () => void }) => {
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600">
               <ShoppingCart className="h-5 w-5 text-white" />
             </div>
-            <Badge className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center border-none bg-indigo-600 p-0 text-[10px] font-bold text-white">
+            <Badge className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center border-none bg-primary p-0 text-[10px] font-bold text-white">
               {totalItems}
             </Badge>
           </div>

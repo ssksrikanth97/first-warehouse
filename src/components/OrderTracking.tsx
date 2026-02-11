@@ -43,7 +43,7 @@ export const OrderTracking = () => {
                         <CardHeader className="p-4 pb-2">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <CardTitle className="text-sm font-bold text-indigo-600">{order.id}</CardTitle>
+                                    <CardTitle className="text-sm font-bold text-primary">{order.id}</CardTitle>
                                     <p className="text-xs text-slate-500 font-medium">{order.items} Items • ₹{order.amount.toLocaleString()}</p>
                                 </div>
                                 <Badge className={`text-[10px] font-bold uppercase tracking-wider ${getStatusColor(order.status)}`}>
@@ -56,7 +56,7 @@ export const OrderTracking = () => {
                                 {[0, 1, 2, 3].map(step => (
                                     <div
                                         key={step}
-                                        className={`flex-1 transition-all duration-500 ${step <= getStatusStep(order.status) ? 'bg-indigo-600' : 'bg-slate-200'}`}
+                                        className={`flex-1 transition-all duration-500 ${step <= getStatusStep(order.status) ? 'bg-primary' : 'bg-slate-200'}`}
                                     />
                                 ))}
                             </div>

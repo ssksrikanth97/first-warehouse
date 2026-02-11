@@ -4,6 +4,7 @@ import React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { AdminProvider } from '@/context/AdminContext';
 import { AdminSidebar } from '@/components/AdminSidebar';
+import { AdminNotifications } from '@/components/admin-views/AdminNotifications';
 import { ModeToggle } from '@/components/ModeToggle';
 import { Button } from '@/components/ui/button';
 import { LayoutDashboard, LogOut } from 'lucide-react';
@@ -26,7 +27,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <header className="sticky top-0 z-50 w-full border-b bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
                     <div className="mx-auto flex max-w-[1400px] items-center justify-between p-4 px-6">
                         <div className="flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                                 <LayoutDashboard className="h-5 w-5 text-white" />
                             </div>
                             <div>
@@ -35,8 +36,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
+                            <AdminNotifications />
                             <ModeToggle />
-                            <Button variant="ghost" size="sm" onClick={logout} className="text-slate-600 dark:text-slate-400 hover:text-indigo-600">
+                            <Button variant="ghost" size="sm" onClick={logout} className="text-slate-600 dark:text-slate-400 hover:text-primary">
                                 <LogOut className="mr-2 h-4 w-4" /> Logout
                             </Button>
                         </div>

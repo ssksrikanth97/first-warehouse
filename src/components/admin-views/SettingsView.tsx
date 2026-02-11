@@ -21,7 +21,7 @@ export function SettingsView() {
                 <Card className="border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
                     <CardHeader className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800">
                         <div className="flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/5 dark:bg-indigo-900/30 text-primary">
                                 <User className="h-5 w-5" />
                             </div>
                             <div>
@@ -41,14 +41,14 @@ export function SettingsView() {
                                 <Input id="phone" defaultValue="1234567890" disabled className="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 cursor-not-allowed" />
                             </div>
                         </div>
-                        <Button className="bg-indigo-600 hover:bg-indigo-700 shadow-sm shadow-indigo-100">Save Changes</Button>
+                        <Button className="bg-primary hover:bg-primary/90 shadow-sm shadow-indigo-100">Save Changes</Button>
                     </CardContent>
                 </Card>
 
                 <Card className="border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
                     <CardHeader className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800">
                         <div className="flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/5 dark:bg-indigo-900/30 text-primary">
                                 <Shield className="h-5 w-5" />
                             </div>
                             <div>
@@ -72,14 +72,14 @@ export function SettingsView() {
                                 <Input id="cfm-pass" type="password" placeholder="Repeat new password" className="border-slate-200 dark:border-slate-800" />
                             </div>
                         </div>
-                        <Button variant="outline" className="border-indigo-600 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20">Update Password</Button>
+                        <Button variant="outline" className="border-primary text-primary hover:bg-primary/5 dark:hover:bg-indigo-900/20">Update Password</Button>
                     </CardContent>
                 </Card>
 
                 <Card className="border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
                     <CardHeader className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800">
                         <div className="flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/5 dark:bg-indigo-900/30 text-primary">
                                 <Smartphone className="h-5 w-5" />
                             </div>
                             <div>

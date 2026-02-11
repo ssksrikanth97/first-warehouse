@@ -85,6 +85,16 @@ async function main() {
       location: 'HSR Layout, Bangalore',
       creditLimit: 50000,
       outstandingBalance: 0
+    },
+    {
+      id: 'u-super-admin',
+      phone: '9999888877',
+      password: 'admin123', // In real app, hash this
+      name: 'Super Admin',
+      role: 'SUPER_ADMIN',
+      shopName: 'System Administrator',
+      location: 'HQ',
+      isActive: true
     }
   ]
 
@@ -211,6 +221,86 @@ async function main() {
         }
       }
     })
+  }
+
+  // Create Dummy Orders
+  const retailer = 'u-retailer'
+  const demoRetailer = 'u-demo-retailer'
+
+  const orders = [
+    {
+      userId: retailer,
+      status: 'DELIVERED',
+      totalAmount: 15000,
+      paymentMethod: 'COD',
+      paymentStatus: 'PAID',
+      items: [
+        { sku: 'OIL-FOR-1L', quantity: 20, price: 145 },
+        { sku: 'ATTA-AASH-10K', quantity: 10, price: 420 },
+        { sku: 'MAGGI-70G-P72', quantity: 5, price: 840 }
+      ]
+    },
+    {
+      userId: retailer,
+      status: 'PENDING',
+      totalAmount: 4500,
+      paymentMethod: 'Credit',
+      paymentStatus: 'PENDING',
+      items: [
+        { sku: 'SURF-EX-1K', quantity: 20, price: 190 }
+      ]
+    },
+    {
+      userId: demoRetailer,
+      status: 'DELIVERED',
+      totalAmount: 8500,
+      paymentMethod: 'Online',
+      paymentStatus: 'PAID',
+      items: [
+        { sku: 'OIL-FOR-1L', quantity: 10, price: 145 },
+        { sku: 'ATTA-AASH-10K', quantity: 10, price: 420 }
+      ]
+    },
+    {
+      userId: demoRetailer,
+      status: 'PACKED',
+      totalAmount: 2200,
+      paymentMethod: 'COD',
+      paymentStatus: 'PENDING',
+      items: [
+        { sku: 'MAGGI-70G-P72', quantity: 2, price: 840 }
+      ]
+    }
+  ]
+
+  for (const order of orders) {
+    // Get product IDs for SKUs
+    const dbItems = []
+    for (const item of order.items) {
+      const product = await prisma.product.findUnique({ where: { sku: item.sku } })
+      if (product) {
+        dbItems.push({
+          productId: product.id,
+          quantity: item.quantity,
+          priceAtOrder: item.price
+        })
+      }
+    }
+
+    if (dbItems.length > 0) {
+      await prisma.order.create({
+        data: {
+          userId: order.userId,
+          status: order.status,
+          totalAmount: order.totalAmount,
+          paymentMethod: order.paymentMethod,
+          paymentStatus: order.paymentStatus,
+          items: {
+            create: dbItems
+          }
+        }
+      })
+    }
   }
 
   console.log('Seeding finished.')

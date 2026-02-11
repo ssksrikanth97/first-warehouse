@@ -16,11 +16,13 @@ export default function Home() {
         router.push('/login');
       } else if (user.role === 'ADMIN') {
         router.push('/admin');
+      } else if (user.role === 'SUPER_ADMIN') {
+        router.push('/super-admin');
       }
     }
   }, [user, isLoading, router]);
 
-  if (isLoading || !user || user.role === 'ADMIN') {
+  if (isLoading || !user || user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') {
     return <div className="loading-screen">Loading...</div>;
   }
 

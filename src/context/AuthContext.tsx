@@ -1,11 +1,11 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, mockUsers } from '@/lib/db-mock';
+import { User } from '@/lib/db-mock';
 
 interface AuthContextType {
     user: User | null;
-    login: (phone: string, password?: string) => Promise<boolean>;
+    login: (phone: string, password?: string) => Promise<{ success: boolean; error?: string }>;
     logout: () => void;
     isLoading: boolean;
 }
@@ -25,17 +25,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     const login = async (phone: string, password?: string) => {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const foundUser = mockUsers.find(u => u.phone === phone);
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, password })
+            });
 
-        // Simple password check for demo purposes
-        if (foundUser && (!foundUser.password || foundUser.password === password)) {
-            setUser(foundUser);
-            localStorage.setItem('kb2b_user', JSON.stringify(foundUser));
-            return true;
+            const data = await res.json();
+
+            if (!res.ok) {
+                if (res.status === 503) {
+                    throw new Error(data.message || 'System Maintenance');
+                }
+                return { success: false, error: data.error || 'Login failed' };
+            }
+
+            setUser(data.user);
+            localStorage.setItem('kb2b_user', JSON.stringify(data.user));
+            return { success: true };
+        } catch (error) {
+            console.error("Login Error:", error);
+            const msg = error instanceof Error ? error.message : 'Login error';
+            if (msg.includes('Maintenance')) {
+                alert(msg);
+            }
+            return { success: false, error: msg };
         }
-        return false;
     };
 
     const logout = () => {

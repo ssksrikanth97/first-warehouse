@@ -59,7 +59,7 @@ export function CategoriesView({ categories, addCategory, updateCategory }: Cate
                     <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Categories</h2>
                     <p className="text-slate-500 dark:text-slate-400">Manage your product categorization</p>
                 </div>
-                <Button className="bg-indigo-600 hover:bg-indigo-700 h-10" onClick={() => handleOpenDialog()}>
+                <Button className="bg-primary hover:bg-primary/90 h-10" onClick={() => handleOpenDialog()}>
                     <Plus className="mr-2 h-4 w-4" /> Add New Category
                 </Button>
             </div>
@@ -99,7 +99,7 @@ export function CategoriesView({ categories, addCategory, updateCategory }: Cate
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="h-8 w-8 text-slate-400 hover:text-indigo-600"
+                                            className="h-8 w-8 text-slate-400 hover:text-primary"
                                             onClick={() => handleOpenDialog(cat)}
                                         >
                                             <Edit2 className="h-4 w-4" />
@@ -155,7 +155,7 @@ export function CategoriesView({ categories, addCategory, updateCategory }: Cate
                         </div>
                         <DialogFooter className="pt-4">
                             <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-                            <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700">
+                            <Button type="submit" className="bg-primary hover:bg-primary/90">
                                 {editingCategory ? 'Save Changes' : 'Create Category'}
                             </Button>
                         </DialogFooter>

@@ -9,12 +9,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { LogOut, Search, ShoppingCart, Package, ShoppingBag } from 'lucide-react';
+import { LogOut, Search, ShoppingCart, Package, ShoppingBag, User as UserIcon } from 'lucide-react';
 
 import { useCart } from '@/context/CartContext';
 import { QuickCart } from './QuickCart';
 import CheckoutModal from './CheckoutModal';
 import { OrderTracking } from './OrderTracking';
+import { ProfileView } from './retailer-views/ProfileView';
 
 import { ModeToggle } from './ModeToggle';
 
@@ -23,6 +24,7 @@ export default function RetailerDashboard({ user }: { user: User }) {
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState('catalog');
 
     const categories = ['All', ...Array.from(new Set(mockProducts.map(p => p.category)))];
 
@@ -42,6 +44,9 @@ export default function RetailerDashboard({ user }: { user: User }) {
                         <p className="text-sm text-slate-500 dark:text-slate-400">{user.shopName}</p>
                     </div>
                     <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="icon" onClick={() => setActiveTab('profile')} className={activeTab === 'profile' ? 'text-primary bg-primary/10' : 'text-slate-600 dark:text-slate-400 hover:text-primary'}>
+                            <UserIcon className="h-5 w-5" />
+                        </Button>
                         <ModeToggle />
                         <Button variant="ghost" size="sm" onClick={logout} className="text-slate-600 dark:text-slate-400">
                             <LogOut className="mr-2 h-4 w-4" /> Logout
@@ -51,12 +56,12 @@ export default function RetailerDashboard({ user }: { user: User }) {
             </header>
 
             <main className="mx-auto max-w-5xl p-4">
-                <Tabs defaultValue="catalog" className="w-full">
-                    <TabsList className="mb-8 grid w-full grid-cols-2 bg-indigo-50">
-                        <TabsTrigger value="catalog" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white">
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <TabsList className="mb-8 grid w-full grid-cols-2 bg-primary/5">
+                        <TabsTrigger value="catalog" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                             <ShoppingBag className="mr-2 h-4 w-4" /> Catalog
                         </TabsTrigger>
-                        <TabsTrigger value="orders" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white">
+                        <TabsTrigger value="orders" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                             <Package className="mr-2 h-4 w-4" /> Orders
                         </TabsTrigger>
                     </TabsList>
@@ -101,6 +106,10 @@ export default function RetailerDashboard({ user }: { user: User }) {
                     <TabsContent value="orders">
                         <OrderTracking />
                     </TabsContent>
+
+                    <TabsContent value="profile">
+                        <ProfileView user={user} />
+                    </TabsContent>
                 </Tabs>
             </main>
 
@@ -133,7 +142,7 @@ function ProductCard({ product }: { product: Product }) {
             </CardHeader>
             <CardContent className="flex-grow p-3 pt-2">
                 <div className="flex items-baseline gap-1">
-                    <p className="text-lg font-bold text-indigo-600">₹{product.wholesalePrice}</p>
+                    <p className="text-lg font-bold text-primary">₹{product.wholesalePrice}</p>
                     <span className="text-[10px] text-slate-500">/ {product.unit}</span>
                 </div>
                 <p className="mt-1 text-[10px] font-medium text-emerald-600">Min Order: {product.minOrderQuantity} {product.unit}s</p>
@@ -142,7 +151,7 @@ function ProductCard({ product }: { product: Product }) {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7 text-indigo-600"
+                        className="h-7 w-7 text-primary"
                         onClick={() => setQuantity(Math.max(product.minOrderQuantity, quantity - product.minOrderQuantity))}
                     >
                         -
@@ -151,7 +160,7 @@ function ProductCard({ product }: { product: Product }) {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7 text-indigo-600"
+                        className="h-7 w-7 text-primary"
                         onClick={() => setQuantity(quantity + product.minOrderQuantity)}
                     >
                         +
@@ -161,7 +170,7 @@ function ProductCard({ product }: { product: Product }) {
             <CardFooter className="p-3 pt-0">
                 <Button
                     variant="outline"
-                    className="w-full border-indigo-600 text-xs text-indigo-600 hover:bg-indigo-600 hover:text-white"
+                    className="w-full border-primary text-xs text-primary hover:bg-primary hover:text-white"
                     size="sm"
                     onClick={() => addToCart(product, quantity)}
                 >

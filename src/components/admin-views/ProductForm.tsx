@@ -48,7 +48,7 @@ export function ProductForm({ initialData, categories, onSubmit, isSubmitting = 
                 </div>
                 <div className="ml-auto flex gap-2">
                     <Button variant="outline" onClick={() => router.back()} type="button">Cancel</Button>
-                    <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700" disabled={isSubmitting}>
+                    <Button type="submit" className="bg-primary hover:bg-primary/90" disabled={isSubmitting}>
                         {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         {initialData ? 'Save Changes' : 'Create Product'}
                     </Button>

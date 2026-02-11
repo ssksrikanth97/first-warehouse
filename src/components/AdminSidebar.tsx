@@ -42,7 +42,7 @@ export function AdminSidebar() {
                             variant={isActive ? "secondary" : "ghost"}
                             className={cn(
                                 "w-full justify-start gap-3 px-3",
-                                isActive ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400" : "text-slate-600 dark:text-slate-400"
+                                isActive ? "bg-primary/5 text-primary/80 dark:bg-indigo-900/30 dark:text-indigo-400" : "text-slate-600 dark:text-slate-400"
                             )}
                             asChild
                         >

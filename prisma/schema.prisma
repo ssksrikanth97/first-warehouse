@@ -21,7 +21,12 @@ model User {
   outstandingBalance Float    @default(0)
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
+  isActive           Boolean  @default(true)
+  email              String?  @unique
+  resetToken         String?
+  resetTokenExpiry   DateTime?
   orders             Order[]
+  customFields       Json?    // New Field for Super Admin
 }
 
 model Product {
@@ -43,6 +48,7 @@ model Product {
   gstPercentage    Float       @default(0) // New field
   hsnCode          String?     // New field
   isActive         Boolean     @default(true) // New field
+  customFields     Json?       // New Field for Super Admin
   
   priceSlabs       PriceSlab[]
   inventory        Inventory[]
@@ -112,4 +118,27 @@ model Issue {
   reason    String
   status    String   @default("OPEN") // OPEN, RESOLVED, REJECTED
   createdAt DateTime @default(now())
+  customFields Json?    // New Field for Super Admin
+}
+
+model SystemSetting {
+  key         String   @id
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+}
+
+model CustomFieldDefinition {
+  id          String   @id @default(cuid())
+  entityType  String   // "PRODUCT", "USER"
+  name        String
+  key         String
+  type        String   // "TEXT", "NUMBER", "BOOLEAN", "SELECT"
+  options     Json?    // For SELECT type
+  required    Boolean  @default(false)
+  visible     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([entityType, key])
 }

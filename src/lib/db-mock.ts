@@ -110,8 +110,12 @@ export interface User {
     phone: string;
     password?: string;
     name: string;
-    role: 'RETAILER' | 'ADMIN';
+    role: 'RETAILER' | 'ADMIN' | 'SUPER_ADMIN';
     shopName?: string;
+    email?: string;
+    location?: string;
+    isActive?: boolean;
+    customFields?: any;
 }
 
 export const mockUsers: User[] = [

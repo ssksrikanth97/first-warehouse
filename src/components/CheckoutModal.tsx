@@ -22,7 +22,7 @@ export default function CheckoutModal({ onClose }: { onClose: () => void }) {
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[450px]">
+      <DialogContent className="sm:max-w-[450px] bg-white dark:bg-slate-950">
         {isOrdered ? (
           <div className="flex flex-col items-center justify-center py-10 text-center animate-in fade-in zoom-in duration-300">
             <div className="mb-4 rounded-full bg-emerald-100 p-3 text-emerald-600">
@@ -37,7 +37,7 @@ export default function CheckoutModal({ onClose }: { onClose: () => void }) {
           <>
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-xl font-bold">
-                <ShoppingBag className="h-5 w-5 text-indigo-600" />
+                <ShoppingBag className="h-5 w-5 text-primary" />
                 Your Cart
               </DialogTitle>
               <DialogDescription>
@@ -60,7 +60,7 @@ export default function CheckoutModal({ onClose }: { onClose: () => void }) {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7 text-indigo-600"
+                          className="h-7 w-7 text-primary"
                           onClick={() => updateQuantity(item.id, item.quantity - item.minOrderQuantity)}
                         >
                           -
@@ -69,7 +69,7 @@ export default function CheckoutModal({ onClose }: { onClose: () => void }) {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7 text-indigo-600"
+                          className="h-7 w-7 text-primary"
                           onClick={() => updateQuantity(item.id, item.quantity + item.minOrderQuantity)}
                         >
                           +
@@ -86,7 +86,7 @@ export default function CheckoutModal({ onClose }: { onClose: () => void }) {
             <div className="space-y-4">
               <div className="flex items-center justify-between font-bold">
                 <span className="text-slate-600">Total Amount</span>
-                <span className="text-xl text-indigo-600">₹{totalAmount.toLocaleString()}</span>
+                <span className="text-xl text-primary">₹{totalAmount.toLocaleString()}</span>
               </div>
             </div>
 
@@ -95,7 +95,7 @@ export default function CheckoutModal({ onClose }: { onClose: () => void }) {
                 Continue Shopping
               </Button>
               <Button
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+                className="flex-1 bg-primary hover:bg-primary/90"
                 onClick={handlePlaceOrder}
                 disabled={items.length === 0}
               >

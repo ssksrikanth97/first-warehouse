@@ -23,7 +23,7 @@ export function InventoryView({ products, updateStock }: InventoryViewProps) {
                 </div>
                 <div className="flex gap-2">
                     <Link href="/admin/inventory/new">
-                        <Button className="bg-emerald-600 hover:bg-emerald-700 h-10">
+                        <Button className="bg-primary hover:bg-primary/90 h-10">
                             <Plus className="mr-2 h-4 w-4" /> Add New SKU
                         </Button>
                     </Link>
@@ -58,7 +58,9 @@ export function InventoryView({ products, updateStock }: InventoryViewProps) {
                                         <img src={p.image} alt="" className="h-10 w-10 rounded-lg object-cover bg-slate-100 dark:bg-slate-800" />
                                         <div>
                                             <p className="font-semibold text-slate-900 dark:text-slate-100">{p.name}</p>
-                                            <p className="text-xs text-slate-500 dark:text-slate-400">{p.brand} • {p.category}</p>
+                                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                                                {p.brand} • {typeof p.category === 'object' ? (p.category as any).name : p.category}
+                                            </p>
                                         </div>
                                     </div>
                                 </TableCell>
@@ -93,7 +95,7 @@ export function InventoryView({ products, updateStock }: InventoryViewProps) {
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    <Badge variant={p.isActive ? "default" : "secondary"} className={cn(p.isActive ? "bg-indigo-100 text-indigo-700 hover:bg-indigo-200" : "bg-slate-100 text-slate-500")}>
+                                    <Badge variant={p.isActive ? "default" : "secondary"} className={cn(p.isActive ? "bg-primary/10 text-primary/80 hover:bg-indigo-200" : "bg-slate-100 text-slate-500")}>
                                         {p.isActive ? 'Active' : 'Inactive'}
                                     </Badge>
                                 </TableCell>
@@ -103,7 +105,7 @@ export function InventoryView({ products, updateStock }: InventoryViewProps) {
                                             <Button
                                                 variant="outline"
                                                 size="icon"
-                                                className="h-8 w-8 text-slate-400 hover:text-indigo-600"
+                                                className="h-8 w-8 text-slate-400 hover:text-primary"
                                             >
                                                 <Edit2 className="h-4 w-4" />
                                             </Button>
